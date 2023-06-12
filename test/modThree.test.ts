@@ -10,16 +10,16 @@ describe("modThree", () => {
     }
 
     const methodWithParam: MethodParams = {
-        setStates: ["S0", "S1", "S2"],
+        setStates: ['S0', 'S1', 'S2'],
         setAlphabet: ['0', '1'],
         setInitialState: 'S0',
         setAcceptingStates: ['S0', 'S1', 'S2'],
     };
 
-    const initFa = (exceptMethod: keyof MethodParams) => {
+    const initFa = (exceptMethod: string) => {
         for (const method in methodWithParam) {
             if (method !== exceptMethod) {
-                (fa as any)[method]();
+                (fa as any)[method](methodWithParam[method as keyof MethodParams]);
             }
         }
     };
@@ -33,16 +33,16 @@ describe("modThree", () => {
             expect(() => fa.processInput({} as string)).toThrow();
         });
 
-        test.each(['setStates', 'setAlphabet', 'setInitialState', 'setInitialState', 'setAcceptingStates'])('throws error when fa."%s"() hasn\'t initialed', (exceptMethod: string) => {
+        test.each(['setStates', 'setAlphabet', 'setInitialState', 'setInitialState', 'setAcceptingStates'])('throws error when "fa.%s"() hasn\'t initialed', (exceptMethod: string) => {
+            initFa(exceptMethod);
             expect(() => {
-                initFa('setStates');
                 fa.addTransition('S0', '0', 'S0');
                 fa.addTransition('S0', '1', 'S1');
                 fa.addTransition('S1', '0', 'S2');
                 fa.addTransition('S1', '1', 'S0');
                 fa.addTransition('S2', '0', 'S1');
                 fa.addTransition('S2', '1', 'S2');
-                fa.processInput('1101');
+                fa.processInput("1101")
             }).toThrow();
         });
 
